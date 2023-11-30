@@ -5,7 +5,7 @@ import java.sql.*;
 public class SQL {
 
     private static final String user = "root";
-    private static final String password = "toor";
+    private static final String password = "root";
     private final String database = "Certificadora";
     public Connection connection;
 
@@ -31,20 +31,23 @@ public class SQL {
         return connection;
     }
 
-    public void getQuery (String ID){
-        String query = "SELECT * FROM  certificados";
+    public String getQuery (String ID){
+        String query = "SELECT * FROM certificados WHERE ID=" + ID;
 
         try{
             Statement statement = connection.createStatement();
             ResultSet queryOutput = statement.executeQuery(query);
 
-            while(queryOutput.next()){
-                System.out.println(queryOutput);
+            if(queryOutput.next()){
+                String queryResult = queryOutput.getString("private_key") + ";" + queryOutput.getString("public_key");
+                System.out.println(queryResult);
+                return queryResult;
+            } else {
+                return "Certificate does not exist";
             }
 
         } catch (Exception e){
-            e.printStackTrace();
-            System.out.println("Query error");
+            return "SQL Error";
         }
     }
 
